@@ -6,16 +6,15 @@ load_dotenv()
 
 agent = create_agent(model="gpt-6-luna")
 
-response = agent.invoke(
+for token, metadata in agent.stream(
     {
         "messages": [
             HumanMessage(content="what is the capital of indonesia?"),
             AIMessage(content="Jakarta."),
             HumanMessage(content="tell me more about it"),
         ]
-    }
-)
-
-print(response["messages"][-1].content)
-print("=========================")
-print("RESPONSE:", response)
+    },
+    stream_mode="messages",
+):
+    if token.content:
+        print(token.content, end="", flush=True)
